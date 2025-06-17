@@ -96,7 +96,16 @@ const ModernChatPDF = () => {
       const formData = new FormData();
       formData.append("file", file);
       
-      const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL || 'http://localhost:8000'}/upload/`, formData, {
+      // More robust URL handling to prevent double slashes
+      const baseUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8000';
+      // Remove trailing slashes from the base URL
+      const cleanBaseUrl = baseUrl.replace(/\/+$/, '');
+      const uploadEndpoint = '/upload';
+      const url = `${cleanBaseUrl}${uploadEndpoint}`;
+      
+      console.log("Making request to:", url); // Debug log
+      
+      const response = await axios.post(url, formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
@@ -141,7 +150,16 @@ const ModernChatPDF = () => {
       const formData = new FormData();
       formData.append("question", currentQuestion);
       
-      const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL || 'http://localhost:8000'}/ask/`, formData, {
+      // More robust URL handling to prevent double slashes
+      const baseUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8000';
+      // Remove trailing slashes from the base URL
+      const cleanBaseUrl = baseUrl.replace(/\/+$/, '');
+      const askEndpoint = '/ask';
+      const url = `${cleanBaseUrl}${askEndpoint}`;
+      
+      console.log("Making question request to:", url); // Debug log
+      
+      const response = await axios.post(url, formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
