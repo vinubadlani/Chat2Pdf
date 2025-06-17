@@ -128,6 +128,14 @@ async def upload_pdf(file: UploadFile = File(...)):
         print(f"🗑️ Cleaning up temporary file: {tmp_file_path}")
         os.unlink(tmp_file_path)
 
+@app.get("/upload/")
+async def upload_pdf_get():
+    """Handler for GET requests to /upload/ to avoid 404 errors"""
+    return {
+        "message": "This endpoint is working but requires a POST request with a PDF file", 
+        "status": "online"
+    }
+
 @app.post("/ask/")
 async def ask_question(question: str = Form(...)):
     """Ask a question about the uploaded PDF"""
@@ -141,6 +149,15 @@ async def ask_question(question: str = Form(...)):
 async def health_check():
     """Health check endpoint"""
     return {"status": "healthy"}
+
+@app.get("/")
+async def root():
+    """Root endpoint for API health verification"""
+    return {
+        "message": "Chat2PDF API is running", 
+        "endpoints": ["/upload/ (POST)", "/ask/ (POST)", "/health/ (GET)"],
+        "status": "online"
+    }
 
 if __name__ == "__main__":
     import uvicorn
