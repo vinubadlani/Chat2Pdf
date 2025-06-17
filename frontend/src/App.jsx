@@ -96,7 +96,7 @@ const ModernChatPDF = () => {
       const formData = new FormData();
       formData.append("file", file);
       
-      // More robust URL handling to prevent double slashes
+      // Fix URL formatting to prevent double slashes
       const baseUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8000';
       // Remove trailing slashes from the base URL
       const cleanBaseUrl = baseUrl.replace(/\/+$/, '');
