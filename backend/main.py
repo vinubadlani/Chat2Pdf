@@ -11,23 +11,10 @@ load_dotenv()
 
 app = FastAPI(title="Chat to PDF RAG API")
 
-# Allow frontend domains for CORS
-allowed_origins = [
-    "http://localhost:3000",     # React default
-    "http://localhost:5173",     # Vite default
-    "https://chat2pdf.vercel.app",  # Expected production URL
-    "https://chat2pdf-main.vercel.app",  # Your actual frontend domain
-    "https://chat2-pdf.vercel.app",  # Your actual backend domain (for potential same-domain testing)
-]
-
-# Add your deployed frontend URL to environment variable
-if os.environ.get("FRONTEND_URL"):
-    allowed_origins.append(os.environ.get("FRONTEND_URL"))
-
-# Enable CORS for frontend with specific headers
+# Enable CORS for all origins during development/debugging
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=allowed_origins,
+    allow_origins=["*"],  # Allow all origins temporarily to debug
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
