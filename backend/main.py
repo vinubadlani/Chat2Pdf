@@ -1,7 +1,8 @@
 import os
 import tempfile
-from fastapi import FastAPI, File, UploadFile, Form, HTTPException
+from fastapi import FastAPI, File, UploadFile, Form, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from dotenv import load_dotenv
 from upload_pdf import extract_text_from_pdf, split_text
 from store_embeddings import get_embedding, get_supabase_client
@@ -33,14 +34,37 @@ allowed_origins = [
 if os.environ.get("FRONTEND_URL"):
     allowed_origins.append(os.environ.get("FRONTEND_URL"))
 
-# Enable CORS for specified origins
+# Enable CORS with additional headers
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=allowed_origins,
-    allow_credentials=True,
+    allow_origins=["*"],  # Use wildcard to accept all origins for immediate fix
+    allow_credentials=False,  # Changed to False to avoid issues with wildcard
     allow_methods=["*"],
     allow_headers=["*"],
+    expose_headers=["Content-Type", "X-Content-Type-Options"],
+    max_age=600,  # Cache preflight requests for 10 minutes
 )
+
+# Additional CORS handling for more complex cases
+@app.middleware("http")
+async def add_cors_headers(request: Request, call_next):
+    response = await call_next(request)
+    response.headers["Access-Control-Allow-Origin"] = "*"
+    response.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS"
+    response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
+    return response
+
+# Handle preflight OPTIONS requests explicitly
+@app.options("/{path:path}")
+async def options_handler(request: Request, path: str):
+    return JSONResponse(
+        content={},
+        headers={
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+            "Access-Control-Allow-Headers": "Content-Type, Authorization",
+        },
+    )
 
 @app.post("/upload/")
 async def upload_pdf(file: UploadFile = File(...)):

@@ -96,19 +96,24 @@ const ModernChatPDF = () => {
       const formData = new FormData();
       formData.append("file", file);
       
-      // Fix URL formatting to prevent double slashes
-      const baseUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8000';
-      // Remove trailing slashes from the base URL
-      const cleanBaseUrl = baseUrl.replace(/\/+$/, '');
-      const uploadEndpoint = '/upload';
-      const url = `${cleanBaseUrl}${uploadEndpoint}`;
+      // Completely reliable URL formatting
+      let baseUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8000';
       
-      console.log("Making request to:", url); // Debug log
+      // Handle URL without any protocol
+      if (!baseUrl.includes('://')) {
+        baseUrl = `https://${baseUrl}`;
+      }
       
-      const response = await axios.post(url, formData, {
+      // Create a URL object to handle proper path joining
+      const url = new URL('/upload', baseUrl);
+      
+      console.log("Making request to:", url.toString()); // Debug log
+      
+      const response = await axios.post(url.toString(), formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
-        }
+        },
+        withCredentials: false
       });
       
       setUploadStatus("✨ Document ready for questions!");
@@ -150,19 +155,24 @@ const ModernChatPDF = () => {
       const formData = new FormData();
       formData.append("question", currentQuestion);
       
-      // More robust URL handling to prevent double slashes
-      const baseUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8000';
-      // Remove trailing slashes from the base URL
-      const cleanBaseUrl = baseUrl.replace(/\/+$/, '');
-      const askEndpoint = '/ask';
-      const url = `${cleanBaseUrl}${askEndpoint}`;
+      // Completely reliable URL formatting
+      let baseUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8000';
       
-      console.log("Making question request to:", url); // Debug log
+      // Handle URL without any protocol
+      if (!baseUrl.includes('://')) {
+        baseUrl = `https://${baseUrl}`;
+      }
       
-      const response = await axios.post(url, formData, {
+      // Create a URL object to handle proper path joining
+      const url = new URL('/ask', baseUrl);
+      
+      console.log("Making question request to:", url.toString()); // Debug log
+      
+      const response = await axios.post(url.toString(), formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
-        }
+        },
+        withCredentials: false
       });
       
       const aiMessage = { 
