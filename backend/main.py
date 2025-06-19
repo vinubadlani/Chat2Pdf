@@ -119,6 +119,7 @@ async def update_pdf_get():
         "content_type": "multipart/form-data"
     }
 
+
 @app.post("/ask")
 @app.post("/ask/")
 async def ask_question(question: str = Form(...)):
