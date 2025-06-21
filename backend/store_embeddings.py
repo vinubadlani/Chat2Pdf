@@ -1,13 +1,13 @@
 import os
-from sentence_transformers import SentenceTransformer
+import openai
 from dotenv import load_dotenv
 from supabase import create_client, Client
 from upload_pdf import extract_text_from_pdf, split_text
 
 load_dotenv()
 
-# Initialize the embedding model
-embedding_model = SentenceTransformer('all-MiniLM-L6-v2')
+# Initialize OpenAI
+openai.api_key = os.getenv("OPENAI_API_KEY")
 
 def get_supabase_client():
     """Get Supabase client connection"""
@@ -16,11 +16,19 @@ def get_supabase_client():
     return create_client(url, key)
 
 def get_embedding(text):
-    """Generate embeddings using sentence-transformers"""
+    """Generate embeddings using OpenAI's API"""
     print(f"🔄 Generating embedding for text (length: {len(text)} chars)")
-    embedding = embedding_model.encode(text)
-    print(f"✅ Generated embedding with {len(embedding)} dimensions")
-    return embedding.tolist()
+    try:
+        response = openai.Embedding.create(
+            input=text,
+            model="text-embedding-ada-002"
+        )
+        embedding = response['data'][0]['embedding']
+        print(f"✅ Generated embedding with {len(embedding)} dimensions")
+        return embedding
+    except Exception as e:
+        print(f"❌ Error generating embedding: {e}")
+        raise
 
 def process_pdf_and_store(path):
     print(f"📄 Processing PDF: {path}")

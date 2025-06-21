@@ -1,13 +1,13 @@
 import os
 import requests
-from sentence_transformers import SentenceTransformer
+import openai
 from dotenv import load_dotenv
 from supabase import create_client, Client
 
 load_dotenv()
 
-# Initialize the embedding model
-embedding_model = SentenceTransformer('all-MiniLM-L6-v2')
+# Initialize OpenAI
+openai.api_key = os.getenv("OPENAI_API_KEY")
 
 def get_supabase_client():
     """Get Supabase client connection"""
@@ -16,9 +16,16 @@ def get_supabase_client():
     return create_client(url, key)
 
 def get_embedding(text):
-    """Generate embeddings using sentence-transformers"""
-    embedding = embedding_model.encode(text)
-    return embedding.tolist()
+    """Generate embeddings using OpenAI's API"""
+    try:
+        response = openai.Embedding.create(
+            input=text,
+            model="text-embedding-ada-002"
+        )
+        return response['data'][0]['embedding']
+    except Exception as e:
+        print(f"❌ Error generating embedding: {e}")
+        raise
 
 def call_groq_api(messages):
     """Call Groq API for chat completion"""
