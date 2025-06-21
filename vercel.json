@@ -4,12 +4,40 @@
     {
       "src": "backend/vercel_app.py",
       "use": "@vercel/python"
+    },
+    {
+      "src": "frontend/**",
+      "use": "@vercel/static"
     }
   ],
   "routes": [
     {
-      "src": "/(.*)",
+      "src": "/api/health",
       "dest": "backend/vercel_app.py"
+    },
+    {
+      "src": "/api/upload",
+      "dest": "backend/vercel_app.py"
+    },
+    {
+      "src": "/api/ask",
+      "dest": "backend/vercel_app.py"
+    },
+    {
+      "src": "/api/(.*)",
+      "dest": "backend/vercel_app.py"
+    },
+    {
+      "src": "/(.*\\.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot))",
+      "dest": "frontend/$1"
+    },
+    {
+      "src": "/",
+      "dest": "frontend/index.html"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "frontend/index.html"
     }
   ],
   "env": {
