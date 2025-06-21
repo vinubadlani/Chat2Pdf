@@ -29,8 +29,8 @@ app.add_middleware(
     allow_headers=["*"],  # Allow all headers
 )
 
-@app.post("/api/upload")
-@app.post("/api/upload/")
+@app.post("/upload")
+@app.post("/upload/")
 async def upload_pdf(file: UploadFile = File(...)):
     """Upload and process PDF file"""
     print(f"\n📤 Received upload request for: {file.filename}")
@@ -96,8 +96,8 @@ async def upload_pdf(file: UploadFile = File(...)):
         print(f"🗑️ Cleaning up temporary file: {tmp_file_path}")
         os.unlink(tmp_file_path)
 
-@app.get("/api/upload")
-@app.get("/api/upload/")
+@app.get("/upload")
+@app.get("/upload/")
 async def upload_pdf_get():
     """Handler for GET requests to /upload/ to avoid 404 errors"""
     return {
@@ -107,8 +107,8 @@ async def upload_pdf_get():
         "content_type": "multipart/form-data"
     }
 
-@app.post("/api/ask")
-@app.post("/api/ask/")
+@app.post("/ask")
+@app.post("/ask/")
 async def ask_question(question: str = Form(...)):
     """Ask a question about the uploaded PDF"""
     try:
@@ -118,8 +118,8 @@ async def ask_question(question: str = Form(...)):
         print(f"❌ Error in ask endpoint: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Error generating answer: {str(e)}")
 
-@app.get("/api/health")
-@app.get("/api/health/")
+@app.get("/health")
+@app.get("/health/")
 async def health_check():
     """Comprehensive health check endpoint"""
     health_status = {
@@ -159,7 +159,7 @@ async def health_check():
     
     return health_status
 
-@app.get("/api/")
+@app.get("/")
 async def root():
     """Root endpoint for API health verification"""
     return {

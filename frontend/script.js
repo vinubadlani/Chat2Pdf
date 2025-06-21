@@ -16,7 +16,7 @@ document.getElementById('uploadForm').addEventListener('submit', async (e) => {
     try {
         document.getElementById('uploadStatus').innerHTML = '<div class="loading">Uploading and processing PDF...</div>';
         
-        const response = await fetch('/api/upload', {
+        const response = await fetch('/upload', {
             method: 'POST',
             body: formData
         });
@@ -51,7 +51,7 @@ document.getElementById('askForm').addEventListener('submit', async (e) => {
         const formData = new FormData();
         formData.append('question', question);
         
-        const response = await fetch('/api/ask', {
+        const response = await fetch('/ask', {
             method: 'POST',
             body: formData
         });
