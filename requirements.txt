@@ -1,0 +1,15 @@
+ollama
+PyMuPDF
+psycopg2-binary
+python-dotenv
+fastapi
+uvicorn
+python-multipart
+sentence-transformers
+requests
+supabase-py
+openai
+pydantic
+pypdf2
+tqdm
+aiofiles
